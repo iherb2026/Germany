@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --sidebar-width: 260px; --primary-color: #e67e22; --bg-dark: #1a1a1a; }
+        :root { --sidebar-width: 240px; --primary-color: #e67e22; --bg-dark: #1a1a1a; }
         body { font-family: -apple-system, system-ui, sans-serif; margin: 0; background: var(--bg-dark); color: white; overflow: hidden; }
         #login-screen { position: fixed; inset: 0; background: var(--bg-dark); z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: #2d2d2d; padding: 2.5rem; border-radius: 16px; text-align: center; width: 90%; max-width: 400px; }
@@ -15,16 +15,17 @@
         button.login-btn { padding: 0.8rem 2rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
         #dashboard { display: none; height: 100vh; grid-template-columns: var(--sidebar-width) 1fr; background: #f4f7f6; color: #333; }
         #sidebar { background: #2c3e50; color: white; padding: 20px 0; display: flex; flex-direction: column; }
-        .sidebar-brand { padding: 0 25px 30px; font-size: 1.5rem; font-weight: bold; color: var(--primary-color); border-bottom: 1px solid #34495e; margin-bottom: 20px; }
-        .nav-item { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; font-size: 1.1rem; }
+        .sidebar-brand { padding: 0 25px 20px; font-size: 1.2rem; font-weight: bold; color: var(--primary-color); border-bottom: 1px solid #34495e; margin-bottom: 10px; }
+        .nav-group { overflow-y: auto; flex-grow: 1; }
+        .nav-item { padding: 12px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; }
         .nav-item:hover { background: #34495e; }
         .nav-item.active { background: var(--primary-color); color: white; }
         #main-content { padding: 40px; overflow-y: auto; }
         @media (max-width: 768px) {
             #dashboard { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-            #sidebar { flex-direction: row; height: auto; overflow-x: auto; padding: 10px; }
+            #sidebar { flex-direction: row; height: auto; overflow-x: auto; padding: 5px; }
             .sidebar-brand { display: none; }
-            .nav-item { padding: 10px 15px; font-size: 0.9rem; white-space: nowrap; }
+            .nav-item { padding: 8px 12px; font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; }
             #main-content { padding: 20px; }
         }
     </style>
@@ -32,26 +33,31 @@
 <body>
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="font-weight: 300;">🇩🇪 Germany Trip</h2>
-            <p style="color: #888; margin-bottom: 20px;">請輸入解密金鑰</p>
-            <input type="password" id="passkey" placeholder="Enter Token...">
+            <h2>🇩🇪 Germany Manager</h2>
+            <input type="password" id="passkey" placeholder="解密金鑰 (0211)">
             <br>
-            <button class="login-btn" onclick="initDashboard()">解鎖儀表板</button>
-            <p id="error" style="color: #ff5555; display:none; margin-top: 15px;">金鑰錯誤</p>
+            <button class="login-btn" onclick="initDashboard()">進入儀表板</button>
+            <p id="error" style="color: #ff5555; display:none; margin-top:15px;">錯誤</p>
         </div>
     </div>
     <div id="dashboard">
         <div id="sidebar">
-            <div class="sidebar-brand">德國旅程 2026</div>
-            <div class="nav-item active" onclick="switchTab('itinerary', this)"><i class="fa fa-calendar-day"></i> 行程規劃</div>
-            <div class="nav-item" onclick="switchTab('flights', this)"><i class="fa fa-plane"></i> 機票資訊</div>
-            <div class="nav-item" onclick="switchTab('hotels', this)"><i class="fa fa-hotel"></i> 旅館住宿</div>
-            <div class="nav-item" onclick="switchTab('expenses', this)"><i class="fa fa-calculator"></i> 費用計算</div>
+            <div class="sidebar-brand">德國行程助手</div>
+            <div class="nav-group">
+                <div class="nav-item active" onclick="switchTab('itinerary', this)"><i class="fa fa-calendar-day"></i> 行程規劃</div>
+                <div class="nav-item" onclick="switchTab('maps', this)"><i class="fa fa-map-location-dot"></i> 路線地圖</div>
+                <div class="nav-item" onclick="switchTab('flights', this)"><i class="fa fa-plane"></i> 機票資訊</div>
+                <div class="nav-item" onclick="switchTab('hotels', this)"><i class="fa fa-hotel"></i> 旅館住宿</div>
+                <div class="nav-item" onclick="switchTab('expenses', this)"><i class="fa fa-calculator"></i> 費用計算</div>
+                <div class="nav-item" onclick="switchTab('checklist', this)"><i class="fa fa-list-check"></i> 行前準備</div>
+                <div class="nav-item" onclick="switchTab('food', this)"><i class="fa fa-utensils"></i> 必吃美食</div>
+                <div class="nav-item" onclick="switchTab('tips', this)"><i class="fa fa-lightbulb"></i> 實用撇步</div>
+            </div>
         </div>
         <div id="main-content"></div>
     </div>
     <script>
-        const vault = {"itinerary":"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","flights":"U2FsdGVkX1/kta3LKREQ5hB22ZDjesq2bZKUdRwVuSfwNYK3vaG483DRKfNW1DX5ebFR14TtkgXHykVG7Ysl1bT/qYg8ZFSGeuVGQ/IZdd8AFz6Vys4g9IMlduSqq9h2VDv/lrb0Uo9d1aDqnemVuBAjw3HHkvHMdbcl5uFIr6E03hXBtemsgGJqiz8ldW8L2r9Vu8YHb/477NxF+KQackz++mAqN9QOC3chxk3vs5cZbGHFjZT7yElluA+wnhClOQpJlzqAeyLGhXLFR79hunMfre1tgKkwcqGQi33Tqkoou5XC7we2wW4vRwaruxRDvkik9QhMDKWWydh8shU3e0Q8BWKtMffqV2qKJGZdlBFoMzjyDpC5H9wC8VSYAM4gKwx7h/QCg7rXJehQMfpkCHBRzMF279mrDS83OCLS8Ks=","hotels":"U2FsdGVkX18kUjIGWrd3iO42CLDVc2OC1iu9qiaG9wOGwNiNApApr6vyV3agdmJzv5Y2NG9o/zRKiA4DrVeJm36AvKVlrR8wiLUyUzYa+FIkgxmvq68U3uwy3AluHQNGdU0afSTEpGXRf29J0eOqyIumI/xsu1es7eRphFaIsJzwb5xz5khE1dc+AKhMwkyT+/ZBIGC/rBwLPStrC9CrvqKWZD7kPL4TLy3iT2vs4aWcIvkmx3DgP9LI05EW0yCcl7lFMMOHpEwaB9xABHQCGyWtmjBlHkaUbRvLCBbrA2LhbbmcBJUv5iG2Y/qk+eiWt3uHajLcS8npIx7nlbJQLWJ8VNdZ4Cl9/RoeLn3yLr4=","expenses":"U2FsdGVkX197ivfGzaEWTJ8pKnc86upBOy7kZ16p+kacJVWwa+8J7ZVF0AD0PLQtWX5D0ujoKN7hfo2RQ0Z84jj68iPlxJbOuHo+eSsqgYLAeQ1czhcl1SyDTADUcA1lw9loYf4FXVmSOdCT74BB5KwvruTiPip3002YbcCah6Yc07r39AppdnPfw036wpT+RDIvdjohc6j9piTuDw1nzQKkKpwgCThAW0ZxNlevj6E4TzgnNfV0dPWSkIl4+O7DZc5Vy1RBZ/Vx3Q74YwDaORsrnWqGEY3J+0yIYAlOuviWa6+sJxroL76/o26ZLvnb7sUOoXcnFaULQXwxhzDUlA=="};
+        const vault = ;
         let currentPass = "";
         function initDashboard() {
             const pass = document.getElementById('passkey').value;
@@ -73,6 +79,7 @@
                 const bytes = CryptoJS.AES.decrypt(vault[tabId], currentPass);
                 const html = bytes.toString(CryptoJS.enc.Utf8);
                 document.getElementById('main-content').innerHTML = html;
+                document.getElementById('main-content').scrollTop = 0;
             } catch(e) { document.getElementById('main-content').innerHTML = "解密錯誤"; }
         }
         document.getElementById("passkey").addEventListener("keypress", (e) => { if(e.key === "Enter") initDashboard(); });
