@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 CNY Trip Manager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --sidebar-width: 240px; --primary-color: #c0392b; --bg-dark: #1a1a1a; }
+        body { font-family: -apple-system, system-ui, sans-serif; margin: 0; background: var(--bg-dark); color: white; overflow: hidden; }
+        #login-screen { position: fixed; inset: 0; background: var(--bg-dark); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: #2d2d2d; padding: 2.5rem; border-radius: 16px; text-align: center; width: 90%; max-width: 400px; }
+        input { padding: 0.8rem; width: 80%; border-radius: 8px; border: 1px solid #444; background: #3d3d3d; color: white; margin-bottom: 1.5rem; text-align: center; font-size: 1rem; }
+        button.login-btn { padding: 0.8rem 2rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        #dashboard { display: none; height: 100vh; grid-template-columns: var(--sidebar-width) 1fr; background: #f4f7f6; color: #333; }
+        #sidebar { background: #2c3e50; color: white; padding: 20px 0; display: flex; flex-direction: column; }
+        .sidebar-brand { padding: 0 25px 20px; font-size: 1.2rem; font-weight: bold; color: #e74c3c; border-bottom: 1px solid #34495e; margin-bottom: 10px; }
+        .nav-group { overflow-y: auto; flex-grow: 1; }
+        .nav-item { padding: 12px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; }
+        .nav-item:hover { background: #34495e; }
+        .nav-item.active { background: var(--primary-color); color: white; }
+        #main-content { padding: 40px; overflow-y: auto; background: #f4f7f6; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .tag-resort { color: #27ae60; font-weight: bold; }
+        .tag-food { color: #e67e22; font-weight: bold; }
+        .tag-gift { color: #9b59b6; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        th { background: #c0392b; color: white; }
+        a { color: #3498db; text-decoration: none; }
+        @media (max-width: 768px) {
+            #dashboard { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+            #sidebar { flex-direction: row; height: auto; overflow-x: auto; padding: 5px; }
+            .sidebar-brand { display: none; }
+            .nav-item { padding: 8px 12px; font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; }
+            #main-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="color: #e74c3c;">🧧 2026 春節旅行管理員</h2>
+            <input type="password" id="passkey" placeholder="請輸入解密金鑰">
+            <br>
+            <button class="login-btn" onclick="initDashboard()">進入儀表板</button>
+            <p id="error" style="color: #ff5555; display:none; margin-top:15px;">金鑰錯誤</p>
+        </div>
+    </div>
+    <div id="dashboard">
+        <div id="sidebar">
+            <div class="sidebar-brand">春節行程助手</div>
+            <div class="nav-group">
+                <div class="nav-item active" onclick="switchTab('itinerary', this)"><i class="fa fa-calendar-day"></i> 行程補完</div>
+                <div class="nav-item" onclick="switchTab('maps', this)"><i class="fa fa-map-location-dot"></i> 路線地圖</div>
+                <div class="nav-item" onclick="switchTab('checklist', this)"><i class="fa fa-list-check"></i> 最終確認清單</div>
+                <div class="nav-item" onclick="switchTab('hotels', this)"><i class="fa fa-hotel"></i> 住宿備忘</div>
+            </div>
+        </div>
+        <div id="main-content"></div>
+    </div>
+    <script>
+        // 預設密碼 2026
+        const vault = {};
+        const password = "2026"; // 此處為了方便產生，實務上我會加密後存入。
+
+        const itineraryData = `
+            <h2 style="color: #c0392b; border-bottom: 2px solid #c0392b; padding-bottom: 10px;">🧧 2026 春節：終極補完計畫 (遺珠清單)</h2>
+            
+            <div class="card">
+                <h3>🟢 2/12 (四) & 2/13 (五) 嘉義：老饕隱藏名單</h3>
+                <p><span class="tag-resort">🏛️ 遺珠景點：</span> <a href="https://www.google.com/maps/place/%E6%AA%9C%E6%84%8F%E6%A3%AE%E6%B4%BB%E6%9D%91+Hinoki+Village/" target="_blank">檜意森活村</a> (全台最大日式宿舍群)</p>
+                <p><span class="tag-food">🍴 必吃美食：</span> 
+                    <a href="https://www.google.com/maps/place/%E6%9E%97%E8%81%B0%E6%98%8E%E6%B2%99%E9%8D%8B%E9%AD%9A%E9%A0%AD/" target="_blank">林聰明沙鍋魚頭</a>、
+                    <a href="https://www.google.com/maps/search/%E6%9D%BE%E5%B1%B1%E5%9C%9F%E7%AA%AF%E7%BE%8A%E8%82%89/" target="_blank">松山土窯羊肉</a>、
+                    <a href="https://www.google.com/maps/place/%E9%98%BF%E5%A8%A5%E8%B1%86%E8%8A%B1/" target="_blank">阿娥豆花</a>
+                </p>
+                <p><span class="tag-gift">🎁 伴手禮：</span> <a href="https://www.google.com/maps/place/%E8%B2%BD%E5%B0%BE%E5%B7%B4%E9%BA%B5%E5%8C%85%E5%BA%97/" target="_blank">貓尾巴泡芙</a>、溢香蛋捲</p>
+            </div>
+
+            <div class="card">
+                <h3>🔵 2/14 (六) 南投/台中：山明水秀</h3>
+                <p><span class="tag-resort">🏛️ 遺珠景點：</span> <a href="https://www.google.com/maps/place/Hohocha%E5%96%9D%E5%96%9D%E8%8C%B6%E4%B8%A8%E5%8F%B0%E4%B8%AD%E6%97%A5%E6%9C%88%E6%BD%AD%E7%B4%85%E8%8C%B6%E5%BB%A0/" target="_blank">Hohocha 喝喝茶</a> (免費吃茶葉蛋)</p>
+                <p><span class="tag-food">🍴 必吃美食：</span> <a href="https://www.google.com/maps/place/%E6%97%A5%E6%9C%88%E9%A4%90%E5%9D%8A/" target="_blank">日月餐坊</a> (合菜招牌)、埔里 <a href="https://www.google.com/maps/place/Feeling18(%E5%B1%AA%E9%87%8C18%E5%BA%A6C%E5%B7%A7%E5%85%8B%E5%8A%9B%E5%B7%A5%E6%88%BF)/" target="_blank">18度C巧克力工房</a></p>
+                <p><span class="tag-gift">🎁 伴手禮：</span> 18度C 生巧克力 (需保冷)</p>
+            </div>
+
+            <div class="card">
+                <h3>🟡 2/15 (日) 六福村 -> 板橋：遊樂園後慰勞</h3>
+                <p><span class="tag-food">🍴 必吃美食：</span> <a href="https://www.google.com/maps/place/%E5%85%AD%E5%BF%85%E5%B1%85%E6%BD%AE%E5%B7%9E%E4%B8%80%E5%93%81%E6%B2%99%E9%8D%8B%E7%B2%A5+%E4%B8%AD%E5%B1%B1%E7%B8%BD%E5%BA%97/" target="_blank">六必居沙鍋粥</a> (頂點推薦)、雅香石頭火鍋</p>
+                <p><span class="tag-gift">🎁 伴手禮：</span> <a href="https://www.google.com/maps/place/%E5%B0%8F%E6%BD%98%E9%B3%B3%E6%A2%A8%E9%85%A5/" target="_blank">小潘鳳凰酥</a> (裸裝更香)</p>
+            </div>
+
+            <div class="card">
+                <h3>🔴 2/16 (一) 除夕：圍爐時刻</h3>
+                <p><span class="tag-resort">🏛️ 遺珠景點：</span> <a href="https://www.google.com/maps/place/%E5%AF%B6%E8%97%8F%E5%B7%96%E5%9C%8B%E9%9A%9B%E8%97%9D%E8%A1%93%E6%9D%91/" target="_blank">寶藏巖藝術村</a> (依山聚落)</p>
+                <p><span class="tag-food">🍴 除夕晚餐：</span> <a href="https://www.google.com/maps/search/板橋+蘇杭餐廳" target="_blank">蘇杭餐廳</a> 或 Mega 50</p>
+                <p><span class="tag-gift">🎁 紀念品：</span> 101 造型水、紀念幣</p>
+            </div>
+
+            <div class="card">
+                <h3>🟣 2/17 (二) 初一：北海岸海味</h3>
+                <p><span class="tag-resort">🏛️ 遺珠景點：</span> <a href="https://www.google.com/maps/place/%E8%80%81%E6%A2%85%E7%B6%A0%E7%9F%B3%E6%A7%BD/" target="_blank">老梅綠石槽</a> (2月轉綠)</p>
+                <p><span class="tag-food">🍴 必吃美食：</span> 金山芋圓王、淡水 <a href="https://www.google.com/maps/place/%E6%99%82%E5%85%89%E6%A8%B9%E5%BD%B1Memory/" target="_blank">時光樹影</a> (日式古蹟)</p>
+                <p><span class="tag-gift">🎁 伴手禮：</span> 李亭香平安龜</p>
+            </div>
+
+            <div class="card">
+                <h3>🟤 2/18 (三) 初二：淡水最後巡禮</h3>
+                <p><span class="tag-resort">🏛️ 遺珠景點：</span> 淡水海關碼頭 (河岸視野)</p>
+                <p><span class="tag-food">🍴 點心：</span> 緣味古早味蛋糕、三協成餅舖</p>
+            </div>
+        `;
+
+        const mapsData = `
+            <h2 style="color: #c0392b;">📍 春節南北縱貫動線</h2>
+            <div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden; border-radius: 8px;">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m30!1m12!1m3!1d1844695.123536652!2d120.30141984260342!3d24.15000762114774!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m15!3e0!4m5!1s0x346e9433de202e8b%3A0x69c4f8a8459461!2sKaohsiung!3m2!1d22.6272784!2d120.3014353!4m5!1s0x3469399896794611%3A0xae5693d2885994!2sTamsui!3m2!1d25.170734!2d121.441492!5e0!3m2!1szh-TW!2stw!4v1700000000000!5m2!1szh-TW!2stw" width="100%" height="100%" style="position:absolute;top:0;left:0;border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        `;
+
+        const checklistData = `
+            <h2 style="color: #c0392b;">📋 最終確認清單 (Checklist)</h2>
+            <div class="card">
+                <ul style="list-style:none; line-height:2.5; font-size:1.1em;">
+                    <li>🔲 嘉義：檜意森活村、阿娥豆花、林聰明。</li>
+                    <li>🔲 南投：18度C巧克力(埔里)、日月餐坊(午餐)。</li>
+                    <li>🔲 板橋：六必居沙鍋粥(需預約)、小潘鳳凰酥。</li>
+                    <li>🔲 台北：寶藏巖、101觀景台門票(Klook先買)。</li>
+                    <li>🔲 北海岸：龜吼漁港巧晏漁坊、金山芋圓王、老梅綠石槽。</li>
+                    <li>🔲 淡水：許義魚酥、時光樹影(晚餐)、緣味蛋糕。</li>
+                </ul>
+            </div>
+        `;
+
+        vault.itinerary = CryptoJS.AES.encrypt(itineraryData, "2026").toString();
+        vault.maps = CryptoJS.AES.encrypt(mapsData, "2026").toString();
+        vault.checklist = CryptoJS.AES.encrypt(checklistData, "2026").toString();
+        vault.hotels = CryptoJS.AES.encrypt("<h2 style='color:#c0392b;'>🏨 住宿備忘</h2><p>尚未輸入資料...</p>", "2026").toString();
+
+        function initDashboard() {
+            const pass = document.getElementById('passkey').value;
+            if (pass === "2026") {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'grid';
+                switchTab('itinerary', document.querySelector('.nav-item.active'));
+            } else {
+                document.getElementById('error').style.display = 'block';
+            }
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            try {
+                const bytes = CryptoJS.AES.decrypt(vault[tabId], "2026");
+                const html = bytes.toString(CryptoJS.enc.Utf8);
+                document.getElementById('main-content').innerHTML = html;
+                document.getElementById('main-content').scrollTop = 0;
+            } catch(e) { document.getElementById('main-content').innerHTML = "解密錯誤"; }
+        }
+        document.getElementById("passkey").addEventListener("keypress", (e) => { if(e.key === "Enter") initDashboard(); });
+    </script>
+</body>
+</html>
