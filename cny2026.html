@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 CNY Trip Manager</title>
+    <title>2026 CNY Trip Manager (Secured)</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -22,28 +22,14 @@
         .nav-item.active { background: var(--primary-color); color: white; }
         #main-content { padding: 40px; overflow-y: auto; background: #f4f7f6; }
         .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .tag-resort { color: #27ae60; font-weight: bold; }
-        .tag-food { color: #e67e22; font-weight: bold; }
-        .tag-gift { color: #9b59b6; font-weight: bold; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; }
-        th { background: #c0392b; color: white; }
-        a { color: #3498db; text-decoration: none; }
-        @media (max-width: 768px) {
-            #dashboard { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-            #sidebar { flex-direction: row; height: auto; overflow-x: auto; padding: 5px; }
-            .sidebar-brand { display: none; }
-            .nav-item { padding: 8px 12px; font-size: 0.85rem; white-space: nowrap; flex-shrink: 0; }
-            #main-content { padding: 20px; }
-        }
+        @media (max-width: 768px) { #dashboard { grid-template-columns: 1fr; grid-template-rows: auto 1fr; } }
     </style>
 </head>
 <body>
     <div id="login-screen">
         <div class="login-box">
-            <h2 style="color: #e74c3c;">🧧 2026 春節旅行管理員</h2>
+            <h2>🧧 2026 春節旅行管理員</h2>
             <input type="password" id="passkey" placeholder="請輸入解密金鑰">
-            <br>
             <button class="login-btn" onclick="initDashboard()">進入儀表板</button>
             <p id="error" style="color: #ff5555; display:none; margin-top:15px;">金鑰錯誤</p>
         </div>
@@ -53,112 +39,35 @@
             <div class="sidebar-brand">春節行程助手</div>
             <div class="nav-group">
                 <div class="nav-item active" onclick="switchTab('itinerary', this)"><i class="fa fa-calendar-day"></i> 行程</div>
-                <div class="nav-item" onclick="switchTab('food', this)"><i class="fa fa-utensils"></i> 美食伴手禮</div>
                 <div class="nav-item" onclick="switchTab('maps', this)"><i class="fa fa-map-location-dot"></i> 路線地圖</div>
-                <div class="nav-item" onclick="switchTab('checklist', this)"><i class="fa fa-list-check"></i> 最終確認清單</div>
-                <div class="nav-item" onclick="switchTab('hotels', this)"><i class="fa fa-hotel"></i> 住宿備忘</div>
+                <div class="nav-item" onclick="switchTab('checklist', this)"><i class="fa fa-list-check"></i> 確認清單</div>
             </div>
         </div>
         <div id="main-content"></div>
     </div>
     <script>
-        // 預設密碼 2026
-        const vault = {"itinerary":"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","maps":"U2FsdGVkX197tSXA5/9keWGy0CyPKUKB9F41HvfaIHD63ET5S96hhbMh1PuZHyVk9vB33EVgWJHt9TlUufb7Cf7GNc3PH5DKDCPUF+GK92Qnf4iDk/gdCxsTAlVTIlbmtRHdZoUJ7dTDESiudtR6xTQ/GpHXfj1s7XWFVs2mTcUCUrJZBJGBVM2C0DIVRs/el8IN8iu8HpTjfJQugrmfucEB/S/NZpx1Fezbh2cy3ysS7N4aq0zr+dSDd3i4XARCZL7A6qgwKdHhJw5C3IVGdm/UXmTctT6BPZn2vfR1Qop4i0l0a7LTbnmkWHKXnCGEewayZ3nxtM1EdglvjrWazQT2MJfuuUeLOJEydKpktLh6xKBaAg4lQbYUFdvqAShBkC1Zv2TN9v/GTC+y1p6uTfBYY6DSGQzzC95j8X7ZzKcPlZjNYbiWsdFtxDTxK25oiUwd+PRKUejT1lpcix4vrsh+uEns4kPX5BbkwE7nwxY49gxSCzFzDz9bf2BKFvqgQ4q+7UzAiKN8JEm5huTDKvT0n/TND6vutpzT6TC1O3/tfm9TMMnCIc12sK+M15ynRQsPOfk9/8U1WCeP0loMfYLiwnxJin04v7W/3caTlDA+3t/WGlZJJfMQMxAk8DnnaZjyg5f7Hrl0RehxkToUaGEOnun5B/V3d8GhiJ3rSrDO31AsGe9P8olFlNjuxQ6xLdX5pryLhiIih5WYVMKrw7MyF9PtzM4AsP6mviQ1KYxjGjg6BmUz9X8vdksnnwGM+eYcV7QWRsxNPwNvW/2V/2YZLHNs9YKNOhJ+0lrFa8OIgkgymaOPNHzdslyTXt/HjhGyaKBzh9EscgZrt7faGtFa1bO6ENM3UJU/ExeLX+RBkXVpJf5QoPJLQm4GssYC0vq1GyN154EnBm3lm42TDi4wsThngOefE3qkvx3u8dQ=","checklist":"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","hotels":"U2FsdGVkX19IlVVrfk2yx4cXui6lxxizYZOAe48UIASMEctWYNIvHrRLDWckp2sex5rqoMJYQST+PgZHBBePbqo0+FIJt6v4pCivkpvy2HmUe2a0kcOT/er6PMW19OYEcr2lMuiiF/8M56iSg4xdaWcGmR52krMYuu1NUPhjZFCPcztq70t6YK98jz8gP6xelQICJIvYjwGuyBVTszCAkw==","food":"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"};
-        const password = "2026"; // 此處為了方便產生，實務上我會加密後存入。
-
-        const itineraryData = `
-            <h2 style="color: #c0392b; border-bottom: 2px solid #c0392b; padding-bottom: 10px;">🧧 2026 春節：終極補完計畫 (遺珠清單)</h2>
-            
-            <div class="card">
-                <h3>🟢 2/12 (四) & 2/13 (五) 嘉義：老饕隱藏名單</h3>
-                <p><span class="tag-resort">🏛️ 遺珠景點：</span> <a href="https://www.google.com/maps/place/%E6%AA%9C%E6%84%8F%E6%A3%AE%E6%B4%BB%E6%9D%91+Hinoki+Village/" target="_blank">檜意森活村</a> (全台最大日式宿舍群)</p>
-                <p><span class="tag-food">🍴 必吃美食：</span> 
-                    <a href="https://www.google.com/maps/place/%E6%9E%97%E8%81%B0%E6%98%8E%E6%B2%99%E9%8D%8B%E9%AD%9A%E9%A0%AD/" target="_blank">林聰明沙鍋魚頭</a>、
-                    <a href="https://www.google.com/maps/search/%E6%9D%BE%E5%B1%B1%E5%9C%9F%E7%AA%AF%E7%BE%8A%E8%82%89/" target="_blank">松山土窯羊肉</a>、
-                    <a href="https://www.google.com/maps/place/%E9%98%BF%E5%A8%A5%E8%B1%86%E8%8A%B1/" target="_blank">阿娥豆花</a>
-                </p>
-                <p><span class="tag-gift">🎁 伴手禮：</span> <a href="https://www.google.com/maps/place/%E8%B2%BD%E5%B0%BE%E5%B7%B4%E9%BA%B5%E5%8C%85%E5%BA%97/" target="_blank">貓尾巴泡芙</a>、溢香蛋捲</p>
-            </div>
-
-            <div class="card">
-                <h3>🔵 2/14 (六) 南投/台中：山明水秀</h3>
-                <p><span class="tag-resort">🏛️ 遺珠景點：</span> <a href="https://www.google.com/maps/place/Hohocha%E5%96%9D%E5%96%9D%E8%8C%B6%E4%B8%A8%E5%8F%B0%E4%B8%AD%E6%97%A5%E6%9C%88%E6%BD%AD%E7%B4%85%E8%8C%B6%E5%BB%A0/" target="_blank">Hohocha 喝喝茶</a> (免費吃茶葉蛋)</p>
-                <p><span class="tag-food">🍴 必吃美食：</span> <a href="https://www.google.com/maps/place/%E6%97%A5%E6%9C%88%E9%A4%90%E5%9D%8A/" target="_blank">日月餐坊</a> (合菜招牌)、埔里 <a href="https://www.google.com/maps/place/Feeling18(%E5%B1%AA%E9%87%8C18%E5%BA%A6C%E5%B7%A7%E5%85%8B%E5%8A%9B%E5%B7%A5%E6%88%BF)/" target="_blank">18度C巧克力工房</a></p>
-                <p><span class="tag-gift">🎁 伴手禮：</span> 18度C 生巧克力 (需保冷)</p>
-            </div>
-
-            <div class="card">
-                <h3>🟡 2/15 (日) 六福村 -> 板橋：遊樂園後慰勞</h3>
-                <p><span class="tag-food">🍴 必吃美食：</span> <a href="https://www.google.com/maps/place/%E5%85%AD%E5%BF%85%E5%B1%85%E6%BD%AE%E5%B7%9E%E4%B8%80%E5%93%81%E6%B2%99%E9%8D%8B%E7%B2%A5+%E4%B8%AD%E5%B1%B1%E7%B8%BD%E5%BA%97/" target="_blank">六必居沙鍋粥</a> (頂點推薦)、雅香石頭火鍋</p>
-                <p><span class="tag-gift">🎁 伴手禮：</span> <a href="https://www.google.com/maps/place/%E5%B0%8F%E6%BD%98%E9%B3%B3%E6%A2%A8%E9%85%A5/" target="_blank">小潘鳳凰酥</a> (裸裝更香)</p>
-            </div>
-
-            <div class="card">
-                <h3>🔴 2/16 (一) 除夕：圍爐時刻</h3>
-                <p><span class="tag-resort">🏛️ 遺珠景點：</span> <a href="https://www.google.com/maps/place/%E5%AF%B6%E8%97%8F%E5%B7%96%E5%9C%8B%E9%9A%9B%E8%97%9D%E8%A1%93%E6%9D%91/" target="_blank">寶藏巖藝術村</a> (依山聚落)</p>
-                <p><span class="tag-food">🍴 除夕晚餐：</span> <a href="https://www.google.com/maps/search/板橋+蘇杭餐廳" target="_blank">蘇杭餐廳</a> 或 Mega 50</p>
-                <p><span class="tag-gift">🎁 紀念品：</span> 101 造型水、紀念幣</p>
-            </div>
-
-            <div class="card">
-                <h3>🟣 2/17 (二) 初一：北海岸海味</h3>
-                <p><span class="tag-resort">🏛️ 遺珠景點：</span> <a href="https://www.google.com/maps/place/%E8%80%81%E6%A2%85%E7%B6%A0%E7%9F%B3%E6%A7%BD/" target="_blank">老梅綠石槽</a> (2月轉綠)</p>
-                <p><span class="tag-food">🍴 必吃美食：</span> 金山芋圓王、淡水 <a href="https://www.google.com/maps/place/%E6%99%82%E5%85%89%E6%A8%B9%E5%BD%B1Memory/" target="_blank">時光樹影</a> (日式古蹟)</p>
-                <p><span class="tag-gift">🎁 伴手禮：</span> 李亭香平安龜</p>
-            </div>
-
-            <div class="card">
-                <h3>🟤 2/18 (三) 初二：淡水最後巡禮</h3>
-                <p><span class="tag-resort">🏛️ 遺珠景點：</span> 淡水海關碼頭 (河岸視野)</p>
-                <p><span class="tag-food">🍴 點心：</span> 緣味古早味蛋糕、三協成餅舖</p>
-            </div>
-        `;
-
-        const mapsData = `
-            <h2 style="color: #c0392b;">📍 春節南北縱貫動線</h2>
-            <div style="position: relative; padding-bottom: 75%; height: 0; overflow: hidden; border-radius: 8px;">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m30!1m12!1m3!1d1844695.123536652!2d120.30141984260342!3d24.15000762114774!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m15!3e0!4m5!1s0x346e9433de202e8b%3A0x69c4f8a8459461!2sKaohsiung!3m2!1d22.6272784!2d120.3014353!4m5!1s0x3469399896794611%3A0xae5693d2885994!2sTamsui!3m2!1d25.170734!2d121.441492!5e0!3m2!1szh-TW!2stw!4v1700000000000!5m2!1szh-TW!2stw" width="100%" height="100%" style="position:absolute;top:0;left:0;border:0;" allowfullscreen="" loading="lazy"></iframe>
-            </div>
-        `;
-
-        const checklistData = `
-            <h2 style="color: #c0392b;">📋 最終確認清單 (Checklist)</h2>
-            <div class="card">
-                <ul style="list-style:none; line-height:2.5; font-size:1.1em;">
-                    <li>🔲 嘉義：檜意森活村、阿娥豆花、林聰明。</li>
-                    <li>🔲 南投：18度C巧克力(埔里)、日月餐坊(午餐)。</li>
-                    <li>🔲 板橋：六必居沙鍋粥(需預約)、小潘鳳凰酥。</li>
-                    <li>🔲 台北：寶藏巖、101觀景台門票(Klook先買)。</li>
-                    <li>🔲 北海岸：龜吼漁港巧晏漁坊、金山芋圓王、老梅綠石槽。</li>
-                    <li>🔲 淡水：許義魚酥、時光樹影(晚餐)、緣味蛋糕。</li>
-                </ul>
-            </div>
-        `;
-
-        vault.itinerary = CryptoJS.AES.encrypt(itineraryData, "2026").toString();
-        vault.maps = CryptoJS.AES.encrypt(mapsData, "2026").toString();
-        vault.checklist = CryptoJS.AES.encrypt(checklistData, "2026").toString();
-        vault.hotels = CryptoJS.AES.encrypt("<h2 style='color:#c0392b;'>🏨 住宿備忘</h2><p>尚未輸入資料...</p>", "2026").toString();
-
+        const vault = {"itinerary":"U2FsdGVkX18+rM5P5IfRi8lGv20wnAPr1z0r7zr4UNM0m9lSrqE0zEO5fNLPCBGYNIDqge8a39PQu9AIuO2eZDs+XGJA2sjHXdom4n3cFKUOqCEsW40Ezq4gHob6CdxG29793QOf1V1cFRgCrJE+3YO4mJuh1tixZvpSR4mDbyzIQroi3cSxT7Lf+Lopo/6AJELAMV6KMscYc8JdqIcv5XEXqCYRWHvzwX+LKyhAjTGENI/uWy7KgX2SyYa3GNDjyjDgqnZblkP4uXKYiyKvRX00LNndmtlTLzVy5WXuVU1/GYVXZBM7uu6Hip5M8Zx0HvWfaUrDS3Z9MN4+ZH/C3h2FPrK/TMaLjekhzZ/sdY/o4S236oXDpsiBzGNCQO7xpZOtczT5DJAZhoHFKrmtecsJsdr/A6DDyLJx7dMjTJEp3jVzV2Jy+RXgkRS2Pm0X1Wa+5W3qneDpYOeNzzG4xQsAxAaKFe7fqtimgUuoFBBVSgGNxGHIzYFE67KHIiPNsH6WmRppVuY57v3RSLjJDwX9oGdfRqZ2pM0SNIhVT7KHLk5KnoZfNPWnbG7QlCZww22xS3kT9ouanojUyPYL7mXGmnJbSPwW0Snb90O1Er6WXG68X61zRBRFMcscB2DpmhJCF5norwPpQ30YGfO997BeUzTzjHPpLgAILWI+5ufFIww1r5EnmCkV9iKRayGQ3+bptkY0yRf3XinLdCPuJ42c6tWAtsFaYJ8lKerLgP/ehpj040smZ3Y3I0EO1nYee0PuTeBCb0JxnXj+uwTR27KWW2hpyjeKXJZiNK05gto9IJVGU9unnU1PG2eq/XfxjNjoHG89K8vLHJVLr3V7Kj6X2gfavqiFixV9hqGOVz2yFDJWWuNpLujal6PfG9uiO9Fvrp1f6e0UTF6xjmgom4FOGeJ5rCZIXVCo813SWarVl6hZ4Wzh7AZ6b0Uos20Fl5Utg5MVx960udauPdtHhuFoG4WGeYcnzfNzH0Roj1jAPZuGZ/H1G/SviUc9N4wgMcz8I5CjNGE296IUDWTXgYeKXmxtGpAfoGkGaQ0/zHY9Z2lI2ly/CgkZ4QAishHedVXveRnRRmG9d1uY0PPQ6gWLX8XFFMFDhfOX/pxsDyf0EgUWsA6aEHGis5VWwGOlAKrQqHsS2mXM0VnCA4hYFAH9Tqu9of2XV0ySairx73EAt9gpH5M8fIrGBxLbD5kYDStP5P2pVYs0S9/lf6Svg2IVQ7Rvmx+FpbSnzMZlereOQD7hlXPSWEH/FEzf9dhlJgbOMXSkW3DRKtHtEJ1mqphNl6n0WJt2UspJjlXqm/xUVofAsZ2JaIfbdNrGq4nmSOnc7UJqbwx88wGxKn1Bn3l3F9vgIuTsh3/vEDRbn0YtVUkCAEZuJIhR2ylm7AUD6sZE5Qu3EgoHLqW/vPX2W/Nc58In82jFhB0ocBUAWwm3CTr9NlMRleqxTEyG5Gmf3Ex/huTduflcTdR+HcWZ2dPDLWaDubG3Nu5zcNldG3Bas9y6gWLO7dftfFX705R/gUHIXNmtYOSds4QHVcZxWWDN2nI07RVey/ELTZU+DcyRG7dhEVlkS3AajztRTd1iQ70BLGXXoY3vULOfrIKZMEUCQfJDmk3Dw1M3RjbrMhYTyzUd65cbDid0d0/JgeSWa0UYbvpZpQ8F6lkvHpMdZWSyw3ggox0Ou3U7xKRKcCvoc6ZYPdZ3ZGQX1r1AaX6fhe0I4V3vMAOvSz8BLA5meJU42x6tNlBTc+1tu3eyqKh+7GQuwqIeVLDkL1B0BQVWhuON3MSlWEIJd/QK7cvfGQn3jql2z6/6aK1KBLWlLVN3o0gJ5h7bE4QBdxdu3cmVuQYAXp/s4HTxZb2YBuUL3FjrNACZDz7mXSkmA1VBIpfYEcl27slZc+ZBiOosO0Ec5KeNywYG188zK5c5xzwYeamXkSQ2xhYdwrnfsv9wg17MphENFy86GL2/XwqKpRyF3NltRaQ6178dgZC4P3LE59AGYydTD3AN1RndywvfvI8oX6KkRhMuIIhcPt3QbFTlfWA0aY9PxN4SmP8yvnMqLv02tqnHl3jER+zSGXpAEorwSbJN6GDKGym/VM2yaTWR0rwi/zQmnv8EBPant2w97OW5yCHJ2GK1t/WYyotlp8Z6Klr3GxSBl/XweA4vUfVXc1GznpAxaPEZL21LDU4Me7JCdk3kDaYyUOygL84+7u0/YD3VKjTrq1hb0DybJW8xTwWhMiFDows60bNtn3SGYu6/DgvjutmNPh7wt7Ca9FFZqo6apdTT8/tlVmUOjFE0nd7eHCyh8IfamtUUChTw99q1F3H2pWOj9DwLSIOhbKlD8GyEMKIFZNmEV2W++Xtbe1nqmexxULbj5hIO4+RZL1x1Wv2h++1C7yB6W3oooMbbvXibrw5JY7SYgisOuFCuuScwdVpEFobahxLuNhXtFMnFP5k0KTpr5Z/qazc4FTryykiyypExh3lksGsKyzU6L0xZth7TrYotEDqmHt/rd1WC9FS7R6xwkA6Cv/DqzBQreL9ECL481/iPvybwpjGh299NcPKOeGloq5YCbG1vYe6hlDDUr3JmwH0yd3mBf9IbH1PNckTxeKdUZjmgcSFioB358O/16CoKFPzxFKSIDsZRlGO2t+FX23olExigSf7R7RqyW49JYTgQVgGxWmas9Q1wBOuCWlwxWRbz7oko3KP66LzqNGA9xMY7PXDwEAzdd5/aZcVpeWUdWxc1bqE6FKWWGIETQGphFC3aFl2SMKKagL0ahoJV4122iZRnHj30qRo+6a/EAzgY4II5ouyaN0CSVV6l3N5kqJQLutXnSAlpKiItNnpMEC/ekTmIM+K1cC8MF2OKW+CWN2Iaix05VOkCWEjUogjTZSuVFeZ/HG4NwAYycZQH2WchxSCvZtQqYkon5rwwbOGW0/wK5lHvPOU2STwST13vTYBYYN9ad/U9BNb+JF7EZlSBrRTZyo0CKOancPwE1OIy97Lp3ZcuCiszgzQOZxVUtUHzudRJeyJcU1fP06q+Lz8q3+Knsm+ewhA9r0JNuBE9YUHELi48i21VlAszxrKk4kXxmNRNThO7oyQTod9vd59nDpBkdkVhoUbiwLFYFFsl8+4cser0puLcCIx73vaA2CzaERwtct36/7lL4u1UV4fy64RVT1Pxzkf3AxaJAvbEQxWh3W36qz18Y0DlvOQ2whwZHGwtmHbetCnF5qvZ9DXU5PJa3ExuZlpexitM+y/zMrRPwXzIN2E9BgMoL7K1HhAFvbpiOApZ+6BZhgZ1dh8JFqp/dCodvTgad4QTGX6Orp60Txm6PndUNddmziMCBsEI74hAPQJ+gMJwzdAmdXywgMzItp2lMt3/XWl8fK/t4PbgAfye8cCXfdCDfgDpEqkgtinxFmADeAJJcNDJQUz1vP2MVAuRYyN34TJJQn3izLSWH8iP6vz04f+XuSwWfaYDjipc37Io9V9IiJQoCHtQDan3sHZWAo6g3iirnrgN6DYbGbXdHbIfWXx8jqTpzlP68ZGcMM1vyKGXD3lJS2FXyZCQ76T6vgLZNjwsuaLfYesCWMmY/g6R+ZJP2HWgtyEkMe3aptWQiSW5EAIfOg2Q56x0pYTCQBH82/zM2TFLYqpWLTcHolfI6ps8qKb7Kep+EQIOaoYX94a47FmHtL8HiSWUUfNBA3YOcHTr+rWkC0IXQzHMlO7gn+XizQuKJXr92F7POJNI2+4PWZtoLLhYdyhvZr8zZoNMb727O5Dtc9u5iR6m32NDC2+LcWQL4UMzfeHPhK7mvqPQqmXo8sMX/rkG19yB5oSHTszkZkJg22+efO1z3iVz7cxs129lHTvIFCAarl1K74yS295UuuiItJTILsKMQtRFQlqypJgZK/jk5ZAGfrW3yi4ZvvCIt9T7JNDearVBLHlZoM3OyNb6FbWaWs0teVzEZPNuplH/nJn2hDypb60CjVI3tyPcXbhHM31CGrW9pN/Invs5YsnpWRxIkmZHpDLOGWhZ4vUDkrpX12c7BIrU1H76O369VFecqdmmbYsekIqf3nwjYP9TyTRdy/qoZPzUJ+8B0jYOE3pudM93/iNj/hnQNWrDf3vShZhWOZfAZ7IrV/g1eI/Qlmb3P3+hokfUeOT5tmxaewNZt9TwcWF9gNazeb+Yt/B0X2IkHBHLUH+zEvkYr9at1CxBGXhCEpW2tNJwXv2MN1bJhbzS89Oz9ShZU5x/Wg8moTGtD/Kgb1o5dlf3/eAdISD5nqzWJ3tm/N2bjfHzq4nmqQv0h1zay8JNZGp1/ojycUmG2W7p1e2Ih8uvZid+hY5ab0TrfLwxXgau6DQ5gWNGBEUB1MycQTvSedNKbn0ICXpqFxrkZccx/Rd/f+N6hIBXfaOnJ0I9uqKsVrEwTD51RQaQImjaR35ImH0wZQ6oM98qVuWWMNfbd97eV/tNBGpDMlNowUcbyoXYEbvaMrgEXWkICnj7aewQoPIRszgQtwdoC+75YotJlqPlkobuodjg/7i1M4pGY052JiRLeBHIK1nXt8NUnEBc26MEKebHQVunME+3lJKrffFCahlVJdDz7GA/QSvW5UTPEN1N2bU3A2v6XY4/mkGrbKNBLY3DzB5Qv558b6tqtumWOZL4SRyypkjAhBMjlMMeqaiELOhmnMg4lsdF3JzLh5/beCoIVNivYtWLpjkqgGlMSYEutEBoja8a95U4/RtCl2HE1mRPeVsVIKDUOD91uIW27B1Rzzlgow5fL4MTUYM17DQ3ALmbnX0gqdWFtHjeNLze1z+h4x3EqX+EfQDFTay3UmCKHfp9J04wV6BeJHFFKUhPtFsXByRaDN+MP7S5Jd49hkzdo0Hvuyo7Bzfn3jUQqh6MPItppREcOSzavnBuQFV4BDRFl6BRbSGDXgMbJw51Agae8waPfOJQw9gm2C4KlkuINFsvh5e7BcFM2V0SkCkQLdpgRcoEDLIU2RdfpsLzxYalx2/1Hnz7v769tskF5WpMxNS38A5Wxen39u4AaAukkKCxLN6gs02DHXdyIwcYgg+RvxEiQA7zpBk0mrdf5F2FCYI3IlKFuoDPyt23Le2ZRKds57Y6E098l9jVmOY5vzEL5qXDZfUay3ROZIZegC9nv8T5wLiCo50WPI4bHZOley42CCpMJzFBdyCfioYlTzSX6V+yFwqSJ3yeHpx0ftLoZG5z7dO19PP40t0y9JVfw/N5u/C+9hg6kzt/QvvjVrrqr6pkyAjn0vmaS+Tt+cazKgRSg4VaFtRp7GEJ/kHCm7PLVm8Aj6Zuux/tUNKl41ArmV0J2QsRUfZSXg1zOhFYP7+1BAJ1L+c+zyjHBjTvC7wTrW7AewAtaGcDTSYRfEW6RDjI+GWzuGu9jgoGt5LkurYRn2UOn5wIrnjJHIrHlplQgVXATU+6l/hqv0gIA5q1OjiqibLE/J0WgrnPtPU3AkpKkJDqx509xZrVqj0p3gpVQ3UE933M3ivs8mJmQgeCYWBNxInsIxV7ccz8wtwBbB5Zl4E3E745jeycSXlZYUlQZZ+n7Ny+EPV3R70FxODJGSaOhv8ChBoUkTQG03l/ViDf+8JGCggsOQo5zL0B5MNJZqMGY4TqT/NHv+SSVbgm/njgdTh7b2saEAqCn2eGKW4hO8rb0IFrjyvutrNN2JaC4yQ4rlhCSYvmVwgJl0Eqs2VhfmyapdyZTSbXmo7f9pLbZPYM4aROUHTHJOk/iACKwbED27UdZTFPe9Fap6uTEn7Wn7I/kCj56KI4yrV9fE4xtpiMYRvHkg7frta6BZkhYH0=","maps":"U2FsdGVkX1+ISAw8e7M75nLGWRQn8AzuYmo++ZMYvoSXAMnx86kDy/BgIFIeZueOjRBahU3FfQWB1L8i6AaqzA==","checklist":"U2FsdGVkX1/t2QTwu4xCzx1DPMNaZ68Y5enXl6YUsyAbIwBKwjTNSMdm4B4s7vyb2QkJA+P3JdA27JpGT5EWrg=="};
+        let currentPass = "";
         function initDashboard() {
             const pass = document.getElementById('passkey').value;
-            if (pass === "2026") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'grid';
-                switchTab('itinerary', document.querySelector('.nav-item.active'));
-            } else {
-                document.getElementById('error').style.display = 'block';
-            }
+            try {
+                const bytes = CryptoJS.AES.decrypt(vault.itinerary, pass);
+                const test = bytes.toString(CryptoJS.enc.Utf8);
+                if (test.length > 0) {
+                    currentPass = pass;
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'grid';
+                    switchTab('itinerary', document.querySelector('.nav-item.active'));
+                } else { throw new Error(); }
+            } catch(e) { document.getElementById('error').style.display = 'block'; }
         }
-
         function switchTab(tabId, element) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
             try {
-                const bytes = CryptoJS.AES.decrypt(vault[tabId], "2026");
+                const bytes = CryptoJS.AES.decrypt(vault[tabId], currentPass);
                 const html = bytes.toString(CryptoJS.enc.Utf8);
                 document.getElementById('main-content').innerHTML = html;
-                document.getElementById('main-content').scrollTop = 0;
             } catch(e) { document.getElementById('main-content').innerHTML = "解密錯誤"; }
         }
         document.getElementById("passkey").addEventListener("keypress", (e) => { if(e.key === "Enter") initDashboard(); });
