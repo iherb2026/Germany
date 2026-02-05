@@ -9,24 +9,17 @@
     <style>
         :root { --sidebar-width: 260px; --primary-color: #e67e22; --bg-dark: #1a1a1a; }
         body { font-family: -apple-system, system-ui, sans-serif; margin: 0; background: var(--bg-dark); color: white; overflow: hidden; }
-        
-        /* Login UI */
         #login-screen { position: fixed; inset: 0; background: var(--bg-dark); z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .login-box { background: #2d2d2d; padding: 2.5rem; border-radius: 16px; text-align: center; width: 90%; max-width: 400px; }
         input { padding: 0.8rem; width: 80%; border-radius: 8px; border: 1px solid #444; background: #3d3d3d; color: white; margin-bottom: 1.5rem; text-align: center; font-size: 1rem; }
         button.login-btn { padding: 0.8rem 2rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
-
-        /* Dashboard UI */
         #dashboard { display: none; height: 100vh; grid-template-columns: var(--sidebar-width) 1fr; background: #f4f7f6; color: #333; }
-        
         #sidebar { background: #2c3e50; color: white; padding: 20px 0; display: flex; flex-direction: column; }
         .sidebar-brand { padding: 0 25px 30px; font-size: 1.5rem; font-weight: bold; color: var(--primary-color); border-bottom: 1px solid #34495e; margin-bottom: 20px; }
         .nav-item { padding: 15px 25px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 12px; font-size: 1.1rem; }
         .nav-item:hover { background: #34495e; }
         .nav-item.active { background: var(--primary-color); color: white; }
-
         #main-content { padding: 40px; overflow-y: auto; }
-        
         @media (max-width: 768px) {
             #dashboard { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
             #sidebar { flex-direction: row; height: auto; overflow-x: auto; padding: 10px; }
@@ -47,7 +40,6 @@
             <p id="error" style="color: #ff5555; display:none; margin-top: 15px;">金鑰錯誤</p>
         </div>
     </div>
-
     <div id="dashboard">
         <div id="sidebar">
             <div class="sidebar-brand">德國旅程 2026</div>
@@ -56,19 +48,14 @@
             <div class="nav-item" onclick="switchTab('hotels', this)"><i class="fa fa-hotel"></i> 旅館住宿</div>
             <div class="nav-item" onclick="switchTab('expenses', this)"><i class="fa fa-calculator"></i> 費用計算</div>
         </div>
-        <div id="main-content">
-            <!-- Content will be injected here -->
-        </div>
+        <div id="main-content"></div>
     </div>
-
     <script>
-        const vault = {"itinerary":"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","flights":"U2FsdGVkX18RieFjOZUYcOdW36BJXo+IzmS9XyfzWSU4NsOFijuYwWY8qHvIQVPdUxefjH+pXvc3NlTeQ4F/jOu+EQO0prL92ENOVUSzbo6Mdcbw1oS1p4ASc6fE9SJplHt/6S7bZOEDR4aL+6kMQDqgRpGwkwjEZkSSiY7V081a+WkL61Q64Ry0cCzatZZHw2sD6RqD+jGGdLEuEfV8O8ykQprqpN5LUj3ZDn+ctrHjwDqdF7HEJ7CZG+jKVed9eHnXzynp4oGTXaxC4bnW6NTboEHi/isvrCtqfEyaz+Lu3/Whp8mh6WLIv8khVCO9DvsXIeyXJ8IxqjnpI73MJXFsEGkSs2rvt8hqY824nKSFqluuR5pDX4a6YKI6OtxRpFJLjQrytdTwKe5RxnnZfMYybgiAZZCwgFCbx1hIybh8WdjKA/vCeybGgk5yI7JHrwdlaEhR6r9+NI9tFyIOnxw1l9xFIggzGUuiTzjez7Q4DP/fvvQ1mPsAHrQTSdJ8/8A/cCczzGOHAQiO1mU7/Rg2ap3cxO/JWenNGMzQ0tMyPPrptE+euyP4O+u+v0KQDxaY/dNEuS8OB7npbGh+PPYqTqZCvaXvNLP83nbVYkcD9Wsg2yF50XMsYfOi7VzRpuxjqj00Ju36S6hCcl4bMKcDJu0N/1lnHcvSaAkertpKoaHn7s6oDbbRzOrhB3SkKmf6gl7RyKVdnmGcy1KGuAvuRshZD4ox+1Z4LBdauw+u2mFP+iPSyuHsYiQytXLLnV6QaTpt2PN4dfIl7P+SaSVT10bUjiKNuzsJ4Rv4fiskRK7Ntc266JaYhio7LqhWPHtj9nPl+NsjNW6S9Gb0lhyxyQduSWB96OU9DHHlViUlfIgrGwT9RPEHs4K2ifhLpG4+qCswliBMtDFvtbu6pW/ljuZW2F5HykYFO2R5GSpxT768owdU5hf00GfmzMkmdPVj4lZAaUGFYa2/nzNgF3jz9vlwlDbxtR4qXYGirofVew2XFRodh/hFjkcBJzGGjbZmggo2HScPqjBxuP16VaPQNxCsU4hCcIS9e92MKlewiX4TOJR+Os86aVfQSIOQrrRIHN61yCnUdkSxu5loH+6QqhbOnPviWY9Ovbh1Dnrh+UkBjxoI2MaBOn7gh+IYu0SDOmvAe5pg7T4MNsJVNaaX2McC4pk0NfsL9nyudFJo0yUJTVXC6RS35UVSCJnPSYhxUyJa6KmVlwsyt6ULlt0gJDTemlGiUyCEV2xLkGWhVm1GEEC52pa4+k9FKNCOctshbX4wvpxHGbJJB4Dsv+XLwfcjldKcB/UsbMrPYe2/m67CV+GWsV+B7n8SIQALp46M+DxKvNDbwFe10PFcMQRscCvsAk876FaqvLKm+KMdRdc7fkt0mEopA7VE72WkRqnt9WMZLnPOMxBybapAGmc4Ic9T96hRrNouXQcri3TnF5H6ex5YZ7CKdtE0awd+Pm+mTocv8sa+SWl2MWXcrYEjp8iIflMKXCEAUpBdoq0sDbf3YeiY3Sa9JdEPb/baY8Lvkz8ZgWK7gKGXPbAC7qOvcBmQhqOkJBB7kQi/XYc=","hotels":"U2FsdGVkX1/y1WimKAAOkzMNWjEHb6A4VB4ufbR5/VPg0kKAcT7AZeNHSpGahZatC3fLt678TmWqotK3nfiWZO5UNSpgg0X3C4B+XRLtvGWErUD1RjZIuxk4F5zo8C3P9qMW0OpIrx/UFc5b/TYOybdwSnTXYJWwn7ymj78cNo9S/IGHA4MAEBqN7VMUIYcVt2jDzG6v0I1/goOROMVmnpdXgGWnHaYs85DI1zoNN5o1X9xrGeZDic2gl/Dhtr1fuszyd2Pdv9nRt/pAa4iiDreFmxXC31O3Lw8fdrput4/Icq2KLdBTDOd1lxhEecCWgynO9BRHaP/nMpi9CnDUyeMmAUCmQ3hBOUHUc4eQN7GdWW4TbWORfx8IG1Uem84p4WZAz8TbqqDH6zjqJRg4/vpVDjZ5AmJ3Pjhzvuq5TTIdnDCWfS5jYx1TrLGMcj1zUMixb+5gDFkzHf+wGz58p3Ies+GYG4dOXi5KzBR0OzULHIN0mvqOBcbEcb9cve7rOSyMucSA14y2FYRP1R0xA9iVcaI/V32FQwRbxLOb1ttueIYgfKrSauVzRXfKeK1tfs1sJsuI+r5/SQ76CzmKMmOm7Ix0DxBfqvhPn1c3YtWBsyBZi6u4VFILsaKIMiUXXFw8OM33mACkD3MZUdIiph2aws0mP0GLA+v+Dq0lEafL4HqBLUvQ8bIWwyB9gf7FE4Fwjh7aH6LytyHoa8EypexnHsZkpDTpyxrl0hm4K8m9NKxLXXNwSME3+AvWLQ9ggMGE4IdKoNUSQhPbMJnlk/TH4agnLMdoCvfchKzkaJK4XOclSu3T0FHvc7suFLrCDtyxJcFQaVHI5si8AkNaHSPEX1vzSmYuuGdBkfvqJptySekaHx+hx1pf7oq0YTEYmFg7+iPu7vRnETyu0ritJ/Yp+bIIkxmhTjJV0xoExEI9P6CyRRG+5b3Jv7kygIv4AcW91g6QrgjZcQVfv4q9f/1sbV9W2Kps9APNWQn/jcLEgNn6iMPxY8mVTbOWO18XMxQK1ElCwLUIP81rBRG7sjI+O/CA8HrqyBsM16kfPj8=","expenses":"U2FsdGVkX1/2GUTAqcxnPGzijUTKdrcFyKnvxrcus+y8sYiM8Ta90yHiZM9EaiPneTKl9uXr5JSH6sdYoVLLF6fOBomGdUSAJDH0F9f7HCTC9Xv70sUk3FhYnoeXj9MG7p/qr0e+9MaLHvX0+7BPGQpcW9LuyEAnPpRlHDMfz8WVt3GL6w3pKLaMjEPC5GyqaQzuI/M0b9KDY/fUv3AvaqOlxoLwuHKFFdw4BJVHL1gV1kHe2NZSDO5/krW4gJWio8MXhRVnOupdTUHFPTVhIlUfxioV5vNNL/W/XRzFo2ZPn1Hsv1QxP6m4TigXSLchvwrN+F0BEG744ihTTb1MDsxmoTXQ7/lgGCgKDKyk3OvB9mdpkPIzsbLjNX2sUxBWNeydNxMUREuBnyfGD6WngLOyt4+6ApcEnKv9l53eSIeItTSNu5pRnTdMCx3uiejhr4xUPHq6nv02hBOCEpTJwFNy6UjgM+AbRM4p4n1DM28moKvPn/T42hyJIAAlPWhIYXUObJ5kV1DBkGZ1xpvfYMm2UMi/TlfpEc4F8rIKIvZwv1LGjEG+DLcTY/F5VTC8HFqVN6PkF7ci03WBKDEB8g5L8uAKZf5rgdRAXMz6ow/R0q4ipnDDUV4Hvapc/tSd5cQdJrJD4Oq1smZr6pLq86rkgAyLWIcprFZqOACeBEzF5AujcrXoOiFxFBS3M8sguLcJmN9Ssu/9lzCfQddW7f5MuJ9yvRM60c37bcXBXe+hxNOmNQPiJCeoRZ8QHCfTs8S/juDEFA6CsNahNytv8UXZ35uymd3x5iVvvA5Bg23u/xVL4SrETFknhZ5YgNih3r6RVyn1nRkKJUP/mvqMYbd5eGURoJEFtSWavRchGtc3DH+i8cUEgvF0PhFf1Rq43WY2C8L7r3LTtlfZbtZxKvk4eEcfT8AMRnTXpoNkNkyFn84vsvSjVF6jU46sYDPTBEaVnkzpYBPPM/vHbpcCejffOl/cxKZXNeqn6jO6OX+2PKhaMgoRxlVp2abtT0mTAaXoNLSZIsoUlZq8AS7wxB0pB4N9eW7RqDZ0QO6Gbv+lq/slMDh1VV/BzBtf/C0FD7JbtXOvMta/XJ+l0mEz8xNgfX268nHATbUERGegYeotJwUJBkPrDRTxkWHHZBq4W95zLSJOUeT/pLngkgvPQrCFkX3DaIwgdd1oIO+kT35ncAGP/RIn/zDoyjXn/SXBhzzlyCUqbW/d3MJymazjUN7vf+re5ATNazVF8PQiAwOQw2W4FOT6vt8hepgjYXmShGLpvY2jP+fCLtq7D2YMIT5nYLkbK+DfDJSambsZpC9IFcihe9sPX0NfFJ9kT/aoLXWoi110VdTAEuvMfgpuFdJKt8uD9LMtEyMKlbfHGm1H480zUP69fHoE+YqO7Ne71MJsaZB3oUAYbI0Gc60UrrWmpdshzyuOZxwWuY0vFLfWsGRBcKx98te0uZYTLb3091fxCvXuiPhKW02wrWFTN7hHiLR0CfEjQS+JOJ05Rp+xZGvXz3Hk2ZbqL3gho7tgfw0vyvDItblSpwx/bIGsZZc3Ld/nvAcmJ5jXWOuooSUea6NLtsFUEXx46hu23n5ggE+b9IquAsV9Dc7MbdnvvhZ4PKlYbj/mU79DP7nWPpY+EkB6PQNefvkBVD03jeykwOa5fXNhd19QtkrbvvibRLdhUHDFSMU16s+d8f/472PJBYXrvLkjG180GU6AVdDT"};
+        const vault = {"itinerary":"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","flights":"U2FsdGVkX1/kta3LKREQ5hB22ZDjesq2bZKUdRwVuSfwNYK3vaG483DRKfNW1DX5ebFR14TtkgXHykVG7Ysl1bT/qYg8ZFSGeuVGQ/IZdd8AFz6Vys4g9IMlduSqq9h2VDv/lrb0Uo9d1aDqnemVuBAjw3HHkvHMdbcl5uFIr6E03hXBtemsgGJqiz8ldW8L2r9Vu8YHb/477NxF+KQackz++mAqN9QOC3chxk3vs5cZbGHFjZT7yElluA+wnhClOQpJlzqAeyLGhXLFR79hunMfre1tgKkwcqGQi33Tqkoou5XC7we2wW4vRwaruxRDvkik9QhMDKWWydh8shU3e0Q8BWKtMffqV2qKJGZdlBFoMzjyDpC5H9wC8VSYAM4gKwx7h/QCg7rXJehQMfpkCHBRzMF279mrDS83OCLS8Ks=","hotels":"U2FsdGVkX18kUjIGWrd3iO42CLDVc2OC1iu9qiaG9wOGwNiNApApr6vyV3agdmJzv5Y2NG9o/zRKiA4DrVeJm36AvKVlrR8wiLUyUzYa+FIkgxmvq68U3uwy3AluHQNGdU0afSTEpGXRf29J0eOqyIumI/xsu1es7eRphFaIsJzwb5xz5khE1dc+AKhMwkyT+/ZBIGC/rBwLPStrC9CrvqKWZD7kPL4TLy3iT2vs4aWcIvkmx3DgP9LI05EW0yCcl7lFMMOHpEwaB9xABHQCGyWtmjBlHkaUbRvLCBbrA2LhbbmcBJUv5iG2Y/qk+eiWt3uHajLcS8npIx7nlbJQLWJ8VNdZ4Cl9/RoeLn3yLr4=","expenses":"U2FsdGVkX197ivfGzaEWTJ8pKnc86upBOy7kZ16p+kacJVWwa+8J7ZVF0AD0PLQtWX5D0ujoKN7hfo2RQ0Z84jj68iPlxJbOuHo+eSsqgYLAeQ1czhcl1SyDTADUcA1lw9loYf4FXVmSOdCT74BB5KwvruTiPip3002YbcCah6Yc07r39AppdnPfw036wpT+RDIvdjohc6j9piTuDw1nzQKkKpwgCThAW0ZxNlevj6E4TzgnNfV0dPWSkIl4+O7DZc5Vy1RBZ/Vx3Q74YwDaORsrnWqGEY3J+0yIYAlOuviWa6+sJxroL76/o26ZLvnb7sUOoXcnFaULQXwxhzDUlA=="};
         let currentPass = "";
-
         function initDashboard() {
             const pass = document.getElementById('passkey').value;
             try {
-                // 嘗試解密行程作為驗證
                 const bytes = CryptoJS.AES.decrypt(vault.itinerary, pass);
                 const test = bytes.toString(CryptoJS.enc.Utf8);
                 if (test.length > 0) {
@@ -77,24 +64,17 @@
                     document.getElementById('dashboard').style.display = 'grid';
                     switchTab('itinerary', document.querySelector('.nav-item.active'));
                 } else { throw new Error(); }
-            } catch(e) {
-                document.getElementById('error').style.display = 'block';
-            }
+            } catch(e) { document.getElementById('error').style.display = 'block'; }
         }
-
         function switchTab(tabId, element) {
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
-            
             try {
                 const bytes = CryptoJS.AES.decrypt(vault[tabId], currentPass);
                 const html = bytes.toString(CryptoJS.enc.Utf8);
                 document.getElementById('main-content').innerHTML = html;
-            } catch(e) {
-                document.getElementById('main-content').innerHTML = "解密錯誤";
-            }
+            } catch(e) { document.getElementById('main-content').innerHTML = "解密錯誤"; }
         }
-
         document.getElementById("passkey").addEventListener("keypress", (e) => { if(e.key === "Enter") initDashboard(); });
     </script>
 </body>
