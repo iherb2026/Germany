@@ -26,8 +26,6 @@
         .card li { margin-bottom: 8px; }
         a { color: #c0392b; text-decoration: none; font-weight: bold; }
         a:hover { text-decoration: underline; }
-        .check-item { margin-bottom: 15px; border-bottom: 1px dashed #eee; padding-bottom: 10px; }
-        .check-title { font-weight: bold; color: #c0392b; display: block; margin-bottom: 5px; }
         @media (max-width: 768px) { 
             #dashboard { grid-template-columns: 1fr; }
             #sidebar { display: none; }
@@ -66,7 +64,7 @@
                     <p><strong>🍴 午餐 (12:00)：</strong> <a href="https://www.google.com/maps/search/嘉義+阿宏師+和平+火雞肉飯" target="_blank">阿宏師 或 和平火雞肉飯</a> (在地人首選)。</p>
                     <p><strong>🕒 下午 (13:30 - 16:30)：</strong> 檜意森活村 & 嘉義製材所。</p>
                     <p><strong>📸 紀念品：</strong> 檜木文創商品 (如檜木筷子、杯墊)。</p>
-                    <p><strong>🎁 伴手禮：</strong> 福義軒蛋捲 (或溢香蛋捲)、<a href="https://www.google.com/maps/search/源興御香屋" target="_blank">源興御香屋</a> (預約葡萄柚綠茶)。</p>
+                    <p><strong>🎁 伴手禮：</strong> 福義軒蛋捲 (或溢香蛋捲)、<a href="https://www.google.com/maps/search/源興御香屋" target="_blank">源興御香屋</a> (必點葡萄柚綠茶)。</p>
                     <p><strong>🍴 晚餐 (18:00)：</strong> <a href="https://www.google.com/maps/search/林聰明沙鍋魚頭" target="_blank">林聰明沙鍋魚頭</a> (或買冷凍包回高雄，改預約松山土窯羊肉)。</p>
                 </div>
 
@@ -77,6 +75,7 @@
                     <p><strong>🕒 11:00 - 15:00 鐵馬行：</strong> 向山遊客中心草皮野餐、與單車合影。</p>
                     <p><strong>🎁 伴手禮：</strong> 向山買「惠蓀咖啡」或「日月潭紅茶」禮盒。</p>
                     <p><strong>🍴 晚餐 (18:30)：</strong> <a href="https://www.google.com/maps/place/潮港城太陽百匯" target="_blank">台中潮港城太陽百匯</a> (海鮮吃到飽)。</p>
+                    <p><strong>✨ 台中隱藏版驚喜：</strong> 餐廳就在大肚山上，餐後開車只要 5 分鐘即可抵達 <a href="https://www.google.com/maps/place/望高寮夜景公園" target="_blank">望高寮</a>！這裡是台中公認視野最廣的「百萬夜景」，有漂亮的木棧道與觀景台。</p>
                 </div>
 
                 <div class="card" style="border-left-color: #f1c40f;">
@@ -90,7 +89,7 @@
                 <div class="card" style="border-left-color: #e74c3c;">
                     <h3>📅 2/16 (一) 除夕：台北雙鐵與圍爐</h3>
                     <p><strong>09:00 騎行：</strong> 馬場町 -> 台大 -> 大安森林公園。</p>
-                    <p><strong>🍴 午餐：</strong> <a href="https://www.google.com/maps/search/金雞園+永康街" target="_blank">金雞園</a> (點酥炸排骨、蟹黃湯包)。</p>
+                    <p><strong>🍴 午餐：</strong> <a href="https://www.google.com/maps/search/金雞園+永康街" target="_blank">金雞園</a> (必點酥炸排骨、蟹黃湯包)。</p>
                     <p><strong>🕒 下午：</strong> 台北101 (買造型水/紀念幣) -> 中正紀念堂。</p>
                     <p><strong>🍴 除夕晚餐 (18:00)：</strong> <strong style="color: #c0392b;">Mega 50 或 王品牛排</strong> (務必提前3個月預訂)。</p>
                 </div>
@@ -114,63 +113,44 @@
             reminders: `
                 <h2 style="color: #c0392b;">📅 1. 關鍵預約決生生 (Deadline Alert)</h2>
                 <div class="card">
-                    <p>春節期間，「有訂位就是 VIP，沒訂位就是難民」。</p>
                     <ul>
                         <li><strong>2/14 晚餐：</strong> 台中潮港城太陽百匯 (極難訂)。</li>
                         <li><strong>2/15 晚餐：</strong> 肉多多 或 雅香 (板橋)。</li>
                         <li><strong>2/16 除夕晚餐：</strong> Mega 50、王品 (提前 2-3 個月確認)。</li>
                         <li><strong>2/17 初一晚餐：</strong> 領事館咖啡 或 Kooks 異嗑堂 (淡水)。</li>
                         <li><strong>APP 準備：</strong> 下載「Lineup」APP (六福村預約用)。</li>
-                        <li><strong>住宿備註：</strong> 致電會館備註「攜帶高價摺疊車，需入房」，並確認停車位。</li>
                     </ul>
                 </div>
-
-                <h2 style="color: #c0392b;">🚗 2. 愛車與交通對策 (Car & Traffic)</h2>
+                <h2 style="color: #c0392b;">🚗 2. 愛車與交通對策</h2>
                 <div class="card">
                     <ul>
-                        <li><strong>五油三水：</strong> 出發前一週進廠保養，檢查胎紋與胎壓。</li>
-                        <li><strong>eTag 儲值：</strong> 確保餘額充足或設定自動儲值。</li>
+                        <li><strong>五油三水：</strong> 出發前一週進廠保養。</li>
                         <li><strong>高乘載注意：</strong> 若車上未滿 3 人，遇管制請改走 <strong>台 61 線西濱快速道路</strong>。</li>
                         <li><strong>塞車神器：</strong> 準備尿袋、大瓶水、涼糖、暈車藥。</li>
                     </ul>
                 </div>
-
-                <h2 style="color: #c0392b;">🧧 3. 春節生存法則 (Survival Guide)</h2>
+                <h2 style="color: #c0392b;">🧧 3. 春節生存法則</h2>
                 <div class="card">
                     <ul>
-                        <li><strong>現金為王：</strong> 身上備足 $3,000~$5,000 現金 (香油錢、漁港、路邊攤用)。</li>
+                        <li><strong>現金為王：</strong> 身上備足 $3,000~$5,000 現金。</li>
                         <li><strong>紅包袋：</strong> 隨身帶幾個空紅包袋應急。</li>
-                        <li><strong>心理建設：</strong> 「排隊是常態，塞車是風景」。保持心情愉快，準備好 Podcast。</li>
-                        <li><strong>緊急資訊：</strong> 確認道路救援電話，下載 Google Maps 離線地圖。</li>
                     </ul>
-                    <p style="text-align: center; font-style: italic; color: #666;">行程是死的，人是活的。安全回家，就是最棒的伴手禮！</p>
                 </div>
             `,
             maps: `
                 <div class="card">
                     <h3>📍 整合導航路徑</h3>
-                    <p><a href="https://www.google.com/maps/dir/高雄/嘉義阿宏師/向山遊客中心/六福村/板橋/台北101/野柳/淡水黑殿/高雄" target="_blank">🚗 2026 春節全程優化導航規劃</a></p>
-                    <p><a href="https://www.google.com/maps/search/林聰明沙鍋魚頭+潮港城+Mega50+巧晏漁坊+黑殿飯店" target="_blank">🍴 老饕朝聖名店地圖</a></p>
-                    <p><a href="https://www.google.com/maps/search/福義軒+溢香+小潘+許義魚酥+新建成+阿玉蔴粩" target="_blank">🎁 伴手禮掃貨地圖</a></p>
+                    <p><a href="https://www.google.com/maps/dir/高雄/嘉義阿宏師/向山遊客中心/六福村/板橋/台北101/野柳/淡水黑殿/高雄" target="_blank">🚗 全程優化導航規劃</a></p>
+                    <p><a href="https://www.google.com/maps/search/林聰明沙鍋魚頭+潮港城+Mega50+巧晏漁坊+黑殿飯店+望高寮" target="_blank">🍴 老饕朝聖與夜景地圖</a></p>
                 </div>
             `,
             checklist: `
                 <div class="card">
-                    <h3>🚲 單車裝備 (Bike Gear)</h3>
+                    <h3>🎒 行李與裝備</h3>
                     <ul>
                         <li>✅ 攜車袋 (進飯店、搭捷運必備)</li>
-                        <li>✅ 簡易維修組 (內胎、挖胎棒、打氣筒)</li>
-                        <li>✅ 前後車燈 (安全第一)</li>
-                        <li>✅ 車鎖 (臨時離開用)</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>🎒 行李與衣物 (Packing)</h3>
-                    <ul>
                         <li>✅ 洋蔥式穿搭 (排汗衣 + 輕羽絨 + 防風外套)</li>
-                        <li>✅ 雨備 (摺疊傘、輕便雨衣)</li>
-                        <li>✅ 好走的運動鞋</li>
-                        <li>✅ 行動電源 (2 顆) 與車充線</li>
+                        <li>✅ 行動電源與車充線</li>
                     </ul>
                 </div>
             `
