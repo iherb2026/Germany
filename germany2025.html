@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Germany 2025 - Deep Itinerary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #e9ecef; color: #333; line-height: 1.6; }
+        .container { max-width: 900px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        .card { padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        h3 { margin-top: 0; }
+        p { margin-bottom: 10px; }
+        #auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .auth-box { background: white; padding: 30px; border-radius: 8px; text-align: center; }
+        input { padding: 10px; margin: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="auth-overlay">
+        <div class="auth-box">
+            <h2>🔐 讀取行程</h2>
+            <input type="password" id="pass" placeholder="輸入密碼 (2026)">
+            <button onclick="unlock()">解鎖</button>
+        </div>
+    </div>
+    <div class="container" id="content" style="display:none;"></div>
+
+    <script>
+        const vault = {"itinerary":"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","updatedAt":"2/17/2026, 2:57:26 AM"};
+        function unlock() {
+            const pass = document.getElementById('pass').value;
+            try {
+                const bytes = CryptoJS.AES.decrypt(vault.itinerary, pass);
+                const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+                if (!decrypted) throw new Error();
+                document.getElementById('content').innerHTML = decrypted + '<p style="text-align:right; font-size:0.8em; color:#999;">更新時間: ' + vault.updatedAt + '</p>';
+                document.getElementById('content').style.display = 'block';
+                document.getElementById('auth-overlay').style.display = 'none';
+            } catch (e) {
+                alert('密碼錯誤！');
+            }
+        }
+    </script>
+</body>
+</html>
